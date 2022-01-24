@@ -13,4 +13,20 @@ public class Auction {
         this.timing = timing;
         this.id = new AuctionId();
     }
+
+    public AuctionId id() {
+        return id;
+    }
+
+    public ItemVO item() {
+        return item;
+    }
+
+    public AuctionPricingVO pricingDetails() {
+        return pricing;
+    }
+
+    public AuctionTimingVO timingDetails() {
+        return timing;
+    }
 }

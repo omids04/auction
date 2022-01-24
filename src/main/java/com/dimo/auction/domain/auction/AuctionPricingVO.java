@@ -11,4 +11,12 @@ public class AuctionPricingVO {
         this.basePrice = basePrice;
         this.currentHighestBid = basePrice;
     }
+
+    public BigInteger getBasePrice(){
+        return this.basePrice;
+    }
+
+    public BigInteger getCurrentHighestBid(){
+        return this.currentHighestBid;
+    }
 }

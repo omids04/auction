@@ -17,4 +17,12 @@ public class AuctionTimingVO {
         this.startTime = startTime;
         this.duration = duration;
     }
+
+    public LocalDateTime getStartTime(){
+        return this.startTime;
+    }
+
+    public LocalDateTime getEndTime(){
+        return this.startTime.plus(duration);
+    }
 }

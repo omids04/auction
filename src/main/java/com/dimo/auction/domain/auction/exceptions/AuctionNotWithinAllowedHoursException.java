@@ -1,4 +1,4 @@
-package com.dimo.auction.domain.aggregates.auction.exceptions;
+package com.dimo.auction.domain.auction.exceptions;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

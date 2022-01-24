@@ -1,4 +1,4 @@
-package com.dimo.auction.domain.aggregates.auction;
+package com.dimo.auction.domain.auction;
 
 import java.math.BigInteger;
 

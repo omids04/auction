@@ -1,9 +1,9 @@
-package com.dimo.auction.domain.services;
+package com.dimo.auction.domain.auction.services;
 
-import com.dimo.auction.domain.aggregates.auction.Auction;
-import com.dimo.auction.domain.aggregates.auction.AuctionPricingVO;
-import com.dimo.auction.domain.aggregates.auction.AuctionTimingVO;
-import com.dimo.auction.domain.aggregates.auction.ItemVO;
+import com.dimo.auction.domain.auction.Auction;
+import com.dimo.auction.domain.auction.AuctionPricingVO;
+import com.dimo.auction.domain.auction.AuctionTimingVO;
+import com.dimo.auction.domain.auction.ItemVO;
 
 import java.math.BigInteger;
 import java.time.Duration;

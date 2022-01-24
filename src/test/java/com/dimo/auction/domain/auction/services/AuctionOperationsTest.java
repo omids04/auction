@@ -1,6 +1,6 @@
-package com.dimo.auction.domain.services;
+package com.dimo.auction.domain.auction.services;
 
-import com.dimo.auction.domain.aggregates.auction.exceptions.AuctionNotWithinAllowedHoursException;
+import com.dimo.auction.domain.auction.exceptions.AuctionNotWithinAllowedHoursException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;

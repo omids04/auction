@@ -1,6 +1,6 @@
-package com.dimo.auction.domain.aggregates.auction.specs;
+package com.dimo.auction.domain.auction.specs;
 
-import com.dimo.auction.domain.aggregates.shared.AbstractSpecification;
+import com.dimo.auction.domain.shared.AbstractSpecification;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

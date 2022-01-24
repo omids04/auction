@@ -1,7 +1,7 @@
-package com.dimo.auction.domain.aggregates.auction;
+package com.dimo.auction.domain.auction;
 
-import com.dimo.auction.domain.aggregates.auction.exceptions.AuctionNotWithinAllowedHoursException;
-import com.dimo.auction.domain.aggregates.auction.specs.AllowedHoursSpec;
+import com.dimo.auction.domain.auction.exceptions.AuctionNotWithinAllowedHoursException;
+import com.dimo.auction.domain.auction.specs.AllowedHoursSpec;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

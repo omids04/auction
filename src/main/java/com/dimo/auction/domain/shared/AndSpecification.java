@@ -1,4 +1,4 @@
-package com.dimo.auction.domain.aggregates.shared;
+package com.dimo.auction.domain.shared;
 
 public class AndSpecification<T> extends AbstractSpecification<T> {
     private final Specification<T> firstSpec;

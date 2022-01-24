@@ -1,4 +1,4 @@
-package com.dimo.auction.domain.aggregates.shared;
+package com.dimo.auction.domain.shared;
 
 public interface Specification<T> {
     boolean isSatisfiedBy(T t);

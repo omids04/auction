@@ -2,7 +2,7 @@ package com.dimo.auction.application.ports.input;
 
 import com.dimo.auction.application.ports.output.AuctionOPort;
 import com.dimo.auction.application.usecases.model.AuctionCreateModel;
-import com.dimo.auction.domain.aggregates.auction.exceptions.AuctionNotWithinAllowedHoursException;
+import com.dimo.auction.domain.auction.exceptions.AuctionNotWithinAllowedHoursException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

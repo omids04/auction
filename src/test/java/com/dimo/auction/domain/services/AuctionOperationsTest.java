@@ -1,4 +1,4 @@
-package com.dimo.auction.domain.service;
+package com.dimo.auction.domain.services;
 
 import com.dimo.auction.domain.aggregates.auction.exceptions.AuctionNotWithinAllowedHoursException;
 import org.junit.jupiter.api.Test;

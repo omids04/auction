@@ -1,4 +1,4 @@
-package com.dimo.auction.domain.service;
+package com.dimo.auction.domain.services;
 
 import com.dimo.auction.domain.aggregates.auction.Auction;
 import com.dimo.auction.domain.aggregates.auction.AuctionPricingVO;

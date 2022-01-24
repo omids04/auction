@@ -4,7 +4,7 @@ import com.dimo.auction.application.ports.output.AuctionOPort;
 import com.dimo.auction.application.usecases.AuctionUseCase;
 import com.dimo.auction.application.usecases.model.AuctionCreateModel;
 import com.dimo.auction.domain.aggregates.auction.Auction;
-import com.dimo.auction.domain.service.AuctionOperations;
+import com.dimo.auction.domain.services.AuctionOperations;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

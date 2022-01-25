@@ -1,19 +1,27 @@
 package com.dimo.auction.domain.auction;
 
-import com.dimo.auction.domain.auction.exceptions.AuctionNotWithinAllowedHoursException;
-import com.dimo.auction.domain.auction.specs.AllowedHoursSpec;
+import com.dimo.auction.domain.auction.exceptions.AuctionDurationException;
+import com.dimo.auction.domain.auction.exceptions.AuctionTimingException;
+import com.dimo.auction.domain.auction.specs.AuctionDurationSpec;
+import com.dimo.auction.domain.auction.specs.AuctionTimingSpec;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class AuctionTimingVO {
-    private LocalDateTime startTime;
-    private Duration duration;
+    private final LocalDateTime startTime;
+    private final Duration duration;
 
     public AuctionTimingVO(LocalDateTime startTime, Duration duration){
-        if(!AllowedHoursSpec.getInstance().isSatisfiedBy(startTime)
-        || !AllowedHoursSpec.getInstance().isSatisfiedBy(startTime.plus(duration)))
-            throw new AuctionNotWithinAllowedHoursException(startTime, duration);
+        if(!AuctionTimingSpec.getInstance().isSatisfiedBy(startTime)
+            || !AuctionTimingSpec.getInstance().isSatisfiedBy(startTime.plus(duration)))
+        {
+            throw new AuctionTimingException(startTime, duration);
+        }
+        if (!AuctionDurationSpec.getInstance().isSatisfiedBy(duration))
+        {
+            throw new AuctionDurationException(duration);
+        }
         this.startTime = startTime;
         this.duration = duration;
     }

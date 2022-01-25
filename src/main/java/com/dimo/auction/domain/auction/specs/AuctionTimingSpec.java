@@ -5,15 +5,15 @@ import com.dimo.auction.domain.shared.AbstractSpecification;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class AllowedHoursSpec extends AbstractSpecification<LocalDateTime> {
+public class AuctionTimingSpec extends AbstractSpecification<LocalDateTime> {
 
 
-    private static final AllowedHoursSpec instance = new AllowedHoursSpec();
+    private static final AuctionTimingSpec instance = new AuctionTimingSpec();
 
     private final LocalTime allowedStartTime;
     private final LocalTime allowedEndTime;
 
-    private AllowedHoursSpec() {
+    private AuctionTimingSpec() {
         allowedStartTime = LocalTime.of(8, 0);
         allowedEndTime = LocalTime.of(18, 0);
     }
@@ -22,10 +22,11 @@ public class AllowedHoursSpec extends AbstractSpecification<LocalDateTime> {
     public boolean isSatisfiedBy(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
         return time.isAfter(allowedStartTime)
-                && time.isBefore(allowedEndTime);
+                && time.isBefore(allowedEndTime)
+                && dateTime.isAfter(LocalDateTime.now());
     }
 
-    public static AllowedHoursSpec getInstance(){
+    public static AuctionTimingSpec getInstance(){
         return instance;
     }
 }

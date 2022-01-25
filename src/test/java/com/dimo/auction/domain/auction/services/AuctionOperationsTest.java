@@ -1,6 +1,6 @@
 package com.dimo.auction.domain.auction.services;
 
-import com.dimo.auction.domain.auction.exceptions.AuctionNotWithinAllowedHoursException;
+import com.dimo.auction.domain.auction.exceptions.AuctionTimingException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -23,7 +23,7 @@ class AuctionOperationsTest {
 
         //when
         //then
-        assertThrows(AuctionNotWithinAllowedHoursException.class,
+        assertThrows(AuctionTimingException.class,
                 () -> AuctionOperations.getInstance().createAuction(itemId, basePrice, startTime, duration));
     }
 
@@ -38,7 +38,7 @@ class AuctionOperationsTest {
 
         //when
         //then
-        assertThrows(AuctionNotWithinAllowedHoursException.class,
+        assertThrows(AuctionTimingException.class,
                 () -> AuctionOperations.getInstance().createAuction(itemId, basePrice, startTime, duration));
     }
 }

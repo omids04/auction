@@ -1,6 +1,6 @@
 package com.dimo.auction.application.ports.input;
 
-import com.dimo.auction.application.ports.output.AuctionCreateOPort;
+import com.dimo.auction.application.ports.output.AuctionCreateOutPort;
 import com.dimo.auction.application.usecases.AuctionCreateUC;
 import com.dimo.auction.application.usecases.model.AuctionCreateModel;
 import com.dimo.auction.application.usecases.model.AuctionDetailModel;
@@ -9,9 +9,9 @@ import com.dimo.auction.domain.auction.services.AuctionOperations;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class AuctionCreateIPort implements AuctionCreateUC {
+public class AuctionCreateInPort implements AuctionCreateUC {
 
-    private final AuctionCreateOPort auctionOPort;
+    private final AuctionCreateOutPort auctionOPort;
 
     @Override
     public AuctionDetailModel addAuction(AuctionCreateModel auctionCreateModel) {

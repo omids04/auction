@@ -1,6 +1,6 @@
 package com.dimo.auction.application.ports.input;
 
-import com.dimo.auction.application.ports.output.AuctionCreateOPort;
+import com.dimo.auction.application.ports.output.AuctionCreateOutPort;
 import com.dimo.auction.application.usecases.model.AuctionCreateModel;
 import com.dimo.auction.application.usecases.model.AuctionDetailModel;
 import com.dimo.auction.domain.auction.exceptions.AuctionBasePricingException;
@@ -33,13 +33,13 @@ import static org.mockito.Mockito.*;
 // auction can only start within allowed hours of day( between 8 AM and 18 PM).
 // price should be positive.
 @ExtendWith(MockitoExtension.class)
-class AuctionIPortTest {
+class AuctionInPortTest {
 
     @Mock
-    AuctionCreateOPort auctionOPort;
+    AuctionCreateOutPort auctionOPort;
 
     @InjectMocks
-    AuctionCreateIPort iPort;
+    AuctionCreateInPort iPort;
 
     private LocalDateTime getTomorrowNoonTime(){
         LocalTime midnight = LocalTime.NOON;

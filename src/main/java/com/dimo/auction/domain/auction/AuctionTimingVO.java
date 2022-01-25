@@ -34,4 +34,22 @@ public class AuctionTimingVO extends ValueObject {
     public LocalDateTime getEndTime(){
         return this.startTime.plus(duration);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AuctionTimingVO that = (AuctionTimingVO) o;
+
+        if (!startTime.equals(that.startTime)) return false;
+        return duration.equals(that.duration);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = startTime.hashCode();
+        result = 31 * result + duration.hashCode();
+        return result;
+    }
 }

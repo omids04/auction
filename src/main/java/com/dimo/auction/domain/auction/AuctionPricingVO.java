@@ -29,4 +29,22 @@ public class AuctionPricingVO extends ValueObject {
             throw new AuctionBasePricingException(basePrice);
         this.basePrice = basePrice;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AuctionPricingVO that = (AuctionPricingVO) o;
+
+        if (!currentHighestBid.equals(that.currentHighestBid)) return false;
+        return basePrice.equals(that.basePrice);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = currentHighestBid.hashCode();
+        result = 31 * result + basePrice.hashCode();
+        return result;
+    }
 }

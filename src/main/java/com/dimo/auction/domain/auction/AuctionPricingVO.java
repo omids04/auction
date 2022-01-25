@@ -2,10 +2,11 @@ package com.dimo.auction.domain.auction;
 
 import com.dimo.auction.domain.auction.exceptions.AuctionBasePricingException;
 import com.dimo.auction.domain.auction.specs.AuctionBasePriceSpec;
+import com.dimo.auction.domain.shared.ValueObject;
 
 import java.math.BigInteger;
 
-public class AuctionPricingVO {
+public class AuctionPricingVO extends ValueObject {
 
     private BigInteger currentHighestBid;
     private BigInteger basePrice;

@@ -1,8 +1,10 @@
 package com.dimo.auction.domain.auction;
 
+import com.dimo.auction.domain.shared.ValueObject;
+
 import java.util.UUID;
 
-public class AuctionId {
+public class AuctionId extends ValueObject {
 
     private final UUID auctionId;
 

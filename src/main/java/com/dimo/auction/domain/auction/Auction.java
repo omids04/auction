@@ -1,8 +1,9 @@
 package com.dimo.auction.domain.auction;
 
-public class Auction {
+import com.dimo.auction.domain.shared.RootEntity;
 
-    private AuctionId id;
+public class Auction extends RootEntity<AuctionId> {
+
     private ItemVO item;
     private AuctionPricingVO pricing;
     private AuctionTimingVO timing;
@@ -11,7 +12,7 @@ public class Auction {
         this.item = item;
         this.pricing = pricing;
         this.timing = timing;
-        this.id = new AuctionId();
+        super.id = new AuctionId();
     }
 
     public AuctionId id() {

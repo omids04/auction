@@ -4,11 +4,12 @@ import com.dimo.auction.domain.auction.exceptions.AuctionDurationException;
 import com.dimo.auction.domain.auction.exceptions.AuctionTimingException;
 import com.dimo.auction.domain.auction.specs.AuctionDurationSpec;
 import com.dimo.auction.domain.auction.specs.AuctionTimingSpec;
+import com.dimo.auction.domain.shared.ValueObject;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class AuctionTimingVO {
+public class AuctionTimingVO extends ValueObject {
     private final LocalDateTime startTime;
     private final Duration duration;
 

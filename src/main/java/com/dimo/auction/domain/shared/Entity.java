@@ -1,24 +1,29 @@
 package com.dimo.auction.domain.shared;
 
-public abstract class Entity<ID> {
-    protected ID id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    public ID getId() {
-        return id;
-    }
+import java.util.Objects;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public abstract class Entity {
+    protected Id id;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Entity<?> entity = (Entity<?>) o;
+        Entity entity = (Entity) o;
 
-        return id.equals(entity.id);
+        return Objects.equals(id, entity.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 }

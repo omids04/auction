@@ -1,5 +1,6 @@
 package com.dimo.auction.application.usecases.queries;
 
+import com.dimo.auction.application.ports.input.queries.AuctionQueriesInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
 import com.dimo.auction.domain.auction.Auction;
 import com.dimo.auction.domain.auction.operations.AuctionOperations;
@@ -28,6 +29,7 @@ public class AuctionQueriesSpec implements En {
     Id userId;
     public AuctionQueriesSpec() {
         outputPort = Mockito.mock(AuctionOutputPort.class);
+        queries = new AuctionQueriesInputPort(outputPort);
         loadInitData();
 
         When("user request to see all auctions", () -> {
@@ -81,7 +83,7 @@ public class AuctionQueriesSpec implements En {
                         AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(30)));
         var auction5 = AuctionOperations
                 .build(Id.generate(), Id.generate(), Price.of(BigInteger.TWO),
-                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime(), Duration.ofMinutes(30)));
+                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusNanos(1), Duration.ofMinutes(30)));
         when(outputPort.getAll()).thenReturn(List.of(auction1, auction2, auction3, auction4, auction5));
     }
 

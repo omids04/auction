@@ -1,11 +1,12 @@
 package com.dimo.auction.application.usecases.queries;
 
-import com.dimo.auction.domain.auction.Auction;
+import com.dimo.auction.domain.auction.vos.Bid;
+import com.dimo.auction.domain.shared.Id;
 
 import java.util.List;
 
 public interface BidQueries {
-    List<Auction> allBidsByAuctionId(List<Auction> auctions);
+    List<Bid> allBidsByAuctionId(Id auctionId);
 
-    List<Auction> allBidsByAccountId(List<Auction> auctions);
+    List<Bid> allBidsByAccountId(Id accountId);
 }

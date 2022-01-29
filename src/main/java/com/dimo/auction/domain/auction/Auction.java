@@ -2,6 +2,7 @@ package com.dimo.auction.domain.auction;
 
 import com.dimo.auction.domain.auction.exceptions.AuctionClosedException;
 import com.dimo.auction.domain.auction.exceptions.BidPriceException;
+import com.dimo.auction.domain.auction.exceptions.TimingModificationException;
 import com.dimo.auction.domain.auction.specs.AuctionTimingSpec;
 import com.dimo.auction.domain.auction.vos.Bid;
 import com.dimo.auction.domain.auction.vos.Price;
@@ -70,7 +71,14 @@ public class Auction extends RootEntity {
     }
 
     public void updateTiming(AuctionTiming timing){
-        this.setTiming(timing);
+        if(this.timing.hasNotStartedYet())
+            this.setTiming(timing);
+        else if(this.timing.isLive()
+                && this.timing.getStartTime().isEqual(timing.getStartTime())
+                && this.timing.getDuration().compareTo(timing.getDuration()) < 0)
+            this.setTiming(timing);
+        else
+            throw new TimingModificationException();
     }
 
     private void setItemId(@NonNull Id id){

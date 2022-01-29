@@ -3,7 +3,7 @@ Feature: change auction time
 
 
   Scenario: user wants to change both start time and duration
-    Given an auction with id "6173e0e9-1862-45d1-a5af-9745abe9bea3"
+    Given a not yet started auction with id "6173e0e9-1862-45d1-a5af-9745abe9bea3"
     And start time tomorrow at noon and duration 30 minutes
     When user wants to change start time to day after tomorrow and duration to 50 minutes
     Then he should be able to do so
@@ -27,6 +27,7 @@ Feature: change auction time
 
   Scenario: changing startTime of a live auction
     Given a live auction with id "8425e611-da94-4f12-8775-717a2c042f20"
+    And duration of 6 minutes
     When user wants to change start time
     Then he should not be able to do so
 

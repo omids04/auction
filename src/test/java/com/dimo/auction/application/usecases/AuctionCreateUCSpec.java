@@ -71,7 +71,7 @@ class AuctionCreateUCSpec implements En {
             this.auction = uc.create(itemId, accountId, basePrice, timing);
         });
 
-        Then("he should be able to do so", () -> {
+        Then("he should be able to add auction", () -> {
             assertNotNull(this.auction.getId());
             verify(auctionOutputPort, times(1)).save(any());
         });

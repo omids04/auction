@@ -27,8 +27,24 @@ public class AuctionTiming extends ValueObject {
 
     public boolean isBidingAllowedCurrently(){
         var now = currentDateTimeService.current();
-        return now.isAfter(startTime)
-                && now.isBefore(startTime.plus(duration));
+        return startTime.isBefore(now)
+                && startTime.plus(duration).isAfter(now);
+    }
+
+    public boolean isLive(){
+        return this.isBidingAllowedCurrently();
+    }
+
+    public boolean isClosed(){
+        var now = currentDateTimeService.current();
+        return startTime.isBefore(now)
+                && startTime.plus(duration).isBefore(now);
+    }
+
+    public boolean hasNotStartedYet(){
+        var now = currentDateTimeService.current();
+        return startTime.isAfter(now)
+                && startTime.plus(duration).isAfter(now);
     }
 
     private void setStartTime(@NonNull LocalDateTime startTime){
@@ -38,6 +54,7 @@ public class AuctionTiming extends ValueObject {
     private void setDuration(@NonNull Duration duration){
         this.duration = duration;
     }
+
 
     @Override
     public boolean equals(Object o) {

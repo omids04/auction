@@ -8,7 +8,7 @@ Feature: adding new auction
     And base price "10"
     And start time tomorrow at noon
     When user want to create a new auction
-    Then he should be able to do so
+    Then he should be able to add auction
 
   Scenario: some user wants to create an auction with duration less than 5 minutes
     Given item with id "d53cc629-3aca-4f55-a633-7d1adae847eb"

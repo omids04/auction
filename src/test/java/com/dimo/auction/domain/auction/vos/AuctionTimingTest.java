@@ -3,6 +3,8 @@ package com.dimo.auction.domain.auction.vos;
 import com.dimo.auction.domain.auction.services.CurrentDateTimeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -75,5 +77,86 @@ class AuctionTimingTest {
 
         //then
         assertFalse(result);
+    }
+
+    @Test
+    void whenStartTimeIsBeforeNowAndEndTimeIsAfterNowThenAuctionIsLive(){
+        //given
+        var timing = AuctionTiming
+                .of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(30));
+
+        //when
+        var isLive = timing.isLive();
+
+        //then
+        assertTrue(isLive);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2022-01-30T11:00", "2022-01-30T13:00"})
+    void whenStartTimeIsAfterNowOrEndTimeIsBeforeNowThenAuctionIsNotLive(String startTime){
+        //given
+        var timing = AuctionTiming
+                .of(()-> LocalDateTime.parse("2022-01-30T12:00"), LocalDateTime.parse(startTime), Duration.ofMinutes(30));
+
+        //when
+        var isLive = timing.isLive();
+
+        //then
+        assertFalse(isLive);
+    }
+
+    @Test
+    void whenStartTimeAndEndTimeIsBeforeNowThenAuctionIsClosed(){
+        //given
+        var timing = AuctionTiming
+                .of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(100), Duration.ofMinutes(30));
+
+        //when
+        var isLive = timing.isClosed();
+
+        //then
+        assertTrue(isLive);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2022-01-30T11:50", "2022-01-30T13:00"})
+    void whenStartTimeOrFinishTimeIsAfterNowThenAuctionIsNotClosed(String startTime){
+        //given
+        var timing = AuctionTiming
+                .of(()-> LocalDateTime.parse("2022-01-30T12:00"), LocalDateTime.parse(startTime), Duration.ofMinutes(30));
+
+        //when
+        var isLive = timing.isClosed();
+
+        //then
+        assertFalse(isLive);
+    }
+
+    @Test
+    void whenStartTimeAndEndTimeIsAfterNowThenAuctionHasNotStartedYet(){
+        //given
+        var timing = AuctionTiming
+                .of(this::getTomorrowNoonTime, getTomorrowNoonTime().plusMinutes(100), Duration.ofMinutes(30));
+
+        //when
+        var isLive = timing.hasNotStartedYet();
+
+        //then
+        assertTrue(isLive);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2022-01-30T11:00", "2022-01-30T11:50"})
+    void whenStartTimeOrFinishTimeIsBeforeNowThenAuctionHasStartedOrClosed(String startTime){
+        //given
+        var timing = AuctionTiming
+                .of(()-> LocalDateTime.parse("2022-01-30T12:00"), LocalDateTime.parse(startTime), Duration.ofMinutes(30));
+
+        //when
+        var isLive = timing.hasNotStartedYet();
+
+        //then
+        assertFalse(isLive);
     }
 }

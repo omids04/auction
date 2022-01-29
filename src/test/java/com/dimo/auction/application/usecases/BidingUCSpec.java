@@ -44,7 +44,7 @@ public class BidingUCSpec implements En {
                     AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(20)));
             when(outputPort.getById(auctionId)).thenReturn(auction);
         });
-        Given("an closed auction with id {string}", (String uuid) -> {
+        Given("a closed auction with id {string}", (String uuid) -> {
             auctionId = Id.of(UUID.fromString(uuid));
             Auction auction = new Auction(auctionId,
                     Id.generate(),
@@ -67,7 +67,7 @@ public class BidingUCSpec implements En {
         Then("^he should be able to bid$", () -> {
             assertNull(exception);
         });
-        Then("^he should not be able to do so$", () -> {
+        Then("^he should not be able to bid$", () -> {
             assertNotNull(exception);
         });
 

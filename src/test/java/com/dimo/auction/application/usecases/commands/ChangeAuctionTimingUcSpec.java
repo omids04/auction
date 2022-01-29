@@ -1,6 +1,6 @@
-package com.dimo.auction.application.usecases;
+package com.dimo.auction.application.usecases.commands;
 
-import com.dimo.auction.application.ports.input.AuctionInputPort;
+import com.dimo.auction.application.ports.input.commands.AuctionCommandsInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
 import com.dimo.auction.application.usecases.commands.ChangeAuctionTimingUC;
 import com.dimo.auction.domain.auction.Auction;
@@ -9,7 +9,6 @@ import com.dimo.auction.domain.auction.vos.AuctionTiming;
 import com.dimo.auction.domain.auction.vos.Price;
 import com.dimo.auction.domain.shared.Id;
 import io.cucumber.java8.En;
-import io.cucumber.java8.Th;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
@@ -36,7 +35,7 @@ public class ChangeAuctionTimingUcSpec implements En {
 
     public ChangeAuctionTimingUcSpec() {
         outputPort = Mockito.mock(AuctionOutputPort.class);
-        uc = new AuctionInputPort(outputPort);
+        uc = new AuctionCommandsInputPort(outputPort);
 
         Given("a not yet started auction with id {string}", (String auctionId) -> {
             id = Id.of(UUID.fromString(auctionId));

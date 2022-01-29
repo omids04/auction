@@ -1,13 +1,10 @@
-package com.dimo.auction.application.usecases;
+package com.dimo.auction.application.usecases.commands;
 
-import com.dimo.auction.application.ports.input.AuctionInputPort;
+import com.dimo.auction.application.ports.input.commands.AuctionCommandsInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
 import com.dimo.auction.application.usecases.commands.BidingUC;
 import com.dimo.auction.domain.auction.Auction;
-import com.dimo.auction.domain.auction.exceptions.BidPriceException;
-import com.dimo.auction.domain.auction.operations.AuctionOperations;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
-import com.dimo.auction.domain.auction.vos.Bid;
 import com.dimo.auction.domain.auction.vos.Price;
 import com.dimo.auction.domain.shared.Id;
 import io.cucumber.java8.En;
@@ -34,7 +31,7 @@ public class BidingUCSpec implements En {
 
     public BidingUCSpec() {
         outputPort = Mockito.mock(AuctionOutputPort.class);
-        uc = new AuctionInputPort(outputPort);
+        uc = new AuctionCommandsInputPort(outputPort);
         Given("an open auction with id {string} and {int} as price of highest bid", (String uuid, Integer price) -> {
             auctionId = Id.of(UUID.fromString(uuid));
             Auction auction = new Auction(auctionId,

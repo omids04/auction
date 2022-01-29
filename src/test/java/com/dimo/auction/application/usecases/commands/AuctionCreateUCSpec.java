@@ -1,6 +1,6 @@
-package com.dimo.auction.application.usecases;
+package com.dimo.auction.application.usecases.commands;
 
-import com.dimo.auction.application.ports.input.AuctionInputPort;
+import com.dimo.auction.application.ports.input.commands.AuctionCommandsInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
 import com.dimo.auction.application.usecases.commands.AuctionCreateUC;
 import com.dimo.auction.domain.auction.Auction;
@@ -39,7 +39,7 @@ class AuctionCreateUCSpec implements En {
 
     public AuctionCreateUCSpec() {
         auctionOutputPort = Mockito.mock(AuctionOutputPort.class);
-        uc = new AuctionInputPort(auctionOutputPort);
+        uc = new AuctionCommandsInputPort(auctionOutputPort);
 
         Given("item with id {string}", (String itemId) -> {
             this.itemId = Id.of(UUID.fromString(itemId));

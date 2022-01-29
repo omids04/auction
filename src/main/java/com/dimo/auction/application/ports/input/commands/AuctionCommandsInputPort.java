@@ -1,4 +1,4 @@
-package com.dimo.auction.application.ports.input;
+package com.dimo.auction.application.ports.input.commands;
 
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
 import com.dimo.auction.application.usecases.commands.AuctionCreateUC;
@@ -14,7 +14,7 @@ import com.dimo.auction.domain.shared.Id;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class AuctionInputPort implements AuctionCreateUC, BidingUC, ChangeAuctionTimingUC {
+public class AuctionCommandsInputPort implements AuctionCreateUC, BidingUC, ChangeAuctionTimingUC {
 
     private final AuctionOutputPort auctionOP;
 

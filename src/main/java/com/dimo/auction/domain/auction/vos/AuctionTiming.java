@@ -1,61 +1,64 @@
 package com.dimo.auction.domain.auction.vos;
 
 
-import com.dimo.auction.domain.auction.services.CurrentDateTimeService;
+import com.dimo.auction.domain.auction.exceptions.TimingModificationException;
+import com.dimo.auction.domain.shared.ValidationUtil;
 import com.dimo.auction.domain.shared.ValueObject;
 import lombok.Getter;
-import lombok.NonNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter
 public class AuctionTiming extends ValueObject {
-    private LocalDateTime startTime;
-    private Duration duration;
-    private CurrentDateTimeService currentDateTimeService;
+    private final LocalDateTime startTime;
+    private final Duration duration;
 
-    private AuctionTiming(){}
 
-    public static AuctionTiming of(CurrentDateTimeService currentDateTimeService, LocalDateTime startTime, Duration duration){
-        AuctionTiming timing = new AuctionTiming();
-        timing.currentDateTimeService = currentDateTimeService;
-        timing.setDuration(duration);
-        timing.setStartTime(startTime);
-        return timing;
-    }
-
-    public boolean isBidingAllowedCurrently(){
-        var now = currentDateTimeService.current();
-        return startTime.isBefore(now)
-                && startTime.plus(duration).isAfter(now);
-    }
-
-    public boolean isLive(){
-        return this.isBidingAllowedCurrently();
-    }
-
-    public boolean isClosed(){
-        var now = currentDateTimeService.current();
-        return startTime.isBefore(now)
-                && startTime.plus(duration).isBefore(now);
-    }
-
-    public boolean hasNotStartedYet(){
-        var now = currentDateTimeService.current();
-        return startTime.isAfter(now)
-                && startTime.plus(duration).isAfter(now);
-    }
-
-    private void setStartTime(@NonNull LocalDateTime startTime){
+    public AuctionTiming(LocalDateTime startTime, Duration duration) {
+        ValidationUtil.getValidator()
+                .notNull(startTime, "Start Time")
+                .notNull(duration, "Duration");
         this.startTime = startTime;
-    }
-
-    private void setDuration(@NonNull Duration duration){
         this.duration = duration;
     }
 
+    public boolean isLiveAt(LocalDateTime time){
+        ValidationUtil.getValidator()
+                .notNull(time, "time");
 
+        return startTime.isBefore(time)
+                && finishTime().isAfter(time);
+    }
+
+    public boolean isClosedAt(LocalDateTime time){
+        ValidationUtil.getValidator()
+                .notNull(time, "time");
+
+        return startTime.isBefore(time)
+                && finishTime().isBefore(time);
+    }
+
+
+    public LocalDateTime finishTime(){
+        return startTime.plus(duration);
+    }
+
+    // when an auction is live, extending its duration is possible
+    private boolean isExtension(AuctionTiming timing, LocalDateTime currentDateTime){
+        return this.isLiveAt(currentDateTime)
+                && this.getStartTime().isEqual(timing.getStartTime())
+                && this.getDuration().compareTo(timing.getDuration()) < 0;
+    }
+
+    public boolean isUpdatableTo(AuctionTiming timing, LocalDateTime currentDateTime){
+        ValidationUtil.getValidator()
+                .notNull(timing, "timing")
+                .notNull(currentDateTime, "currentDateTime");
+
+        return !(isLiveAt(currentDateTime) || isClosedAt(currentDateTime))
+                || isExtension(timing, currentDateTime);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

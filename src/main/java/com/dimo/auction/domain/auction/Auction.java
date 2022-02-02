@@ -1,99 +1,56 @@
 package com.dimo.auction.domain.auction;
 
-import com.dimo.auction.domain.auction.exceptions.AuctionClosedException;
-import com.dimo.auction.domain.auction.exceptions.BidPriceException;
 import com.dimo.auction.domain.auction.exceptions.TimingModificationException;
 import com.dimo.auction.domain.auction.specs.AuctionTimingSpec;
-import com.dimo.auction.domain.auction.vos.Bid;
+import com.dimo.auction.domain.auction.vos.AuctionBids;
 import com.dimo.auction.domain.auction.vos.Price;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
 import com.dimo.auction.domain.shared.Id;
 import com.dimo.auction.domain.shared.RootEntity;
+import com.dimo.auction.domain.shared.ValidationUtil;
 import lombok.Getter;
-import lombok.NonNull;
 
-import java.util.*;
+import java.time.LocalDateTime;
 
 @Getter
 public class Auction extends RootEntity {
 
-    private Id itemId;
-    private Id accountId;
+    private final Id itemId;
+    private final Id accountId;
     private AuctionTiming timing;
-    private List<Bid> bids;
-    private Price basePrice;
+    private AuctionBids bids;
 
 
     public Auction(Id id, Id itemId, Id accountId, Price basePrice, AuctionTiming timing) {
+        this(id, itemId, accountId, timing, AuctionBids.emptyBidsList(basePrice));
+    }
+
+    public Auction(Id id, Id itemId, Id accountId, AuctionTiming timing, AuctionBids bids) {
         super(id);
-        this.setItemId(itemId);
-        this.setAccountId(accountId);
-        this.setBasePrice(basePrice);
-        this.setTiming(timing);
-        bids = new ArrayList<>();
+        ValidationUtil.getValidator()
+                .notNull(itemId, "ItemId")
+                .notNull(accountId, "accountId")
+                .notNull(timing, "timing")
+                .notNull(bids, "auction bids");
+        this.itemId = itemId;
+        this.accountId = accountId;
+        this.bids = bids;
+        this.timing = doesSatisfySpecs(timing);
+
     }
 
-    public Auction(Id id, Id itemId, Id accountId, Price basePrice, AuctionTiming timing, List<Bid> bids) {
-        super(id);
-        this.setItemId(itemId);
-        this.setAccountId(accountId);
-        this.setBasePrice(basePrice);
-        this.setTiming(timing);
-        this.bids = new ArrayList<>(bids);
-    }
-
-    public void bid(Bid bid){
-        if(!timing.isBidingAllowedCurrently())
-            throw new AuctionClosedException();
-        if(isThisFirstBid()){
-            if(bid.getPrice().compareTo(basePrice) < 0)
-                throw new BidPriceException(basePrice, bid.getPrice());
-        }else {
-            Bid highest = this.getHighestBid();
-            if(bid.getPrice().compareTo(highest.getPrice()) <= 0)
-                throw new BidPriceException(basePrice, bid.getPrice());
-        }
-        bids.add(bid);
-    }
-
-    private boolean isThisFirstBid(){
-        return bids.isEmpty();
-    }
-
-    public Optional<Bid> highestBid(){
-        if(this.bids.isEmpty())
-            return Optional.empty();
-        return Optional.of(getHighestBid());
-    }
-
-    private Bid getHighestBid(){
-        return Collections.max(bids, Comparator.comparing(Bid::getPrice));
-    }
-
-    public void updateTiming(AuctionTiming timing){
-        if(this.timing.hasNotStartedYet())
-            this.setTiming(timing);
-        else if(this.timing.isLive()
-                && this.timing.getStartTime().isEqual(timing.getStartTime())
-                && this.timing.getDuration().compareTo(timing.getDuration()) < 0)
-            this.setTiming(timing);
-        else
+    public void updateTiming(AuctionTiming timing, LocalDateTime currentDateTime){
+        if(!this.timing.isUpdatableTo(timing, currentDateTime))
             throw new TimingModificationException();
+        this.timing = doesSatisfySpecs(timing);
     }
 
-    private void setItemId(@NonNull Id id){
-        this.itemId = id;
+    public void bid(Id accountId ,Price price, LocalDateTime currentDateTime){
+        bids = bids.bid(accountId, price, timing, currentDateTime);
     }
 
-    private void setAccountId(@NonNull Id id){
-        this.accountId = id;
-    }
-
-    private void setBasePrice(@NonNull Price basePrice){this.basePrice = basePrice;}
-
-    private void setTiming(@NonNull AuctionTiming timing){
+    private AuctionTiming doesSatisfySpecs(AuctionTiming timing) {
         AuctionTimingSpec.getInstance().check(timing);
-        this.timing = timing;
+        return timing;
     }
-
 }

@@ -5,7 +5,7 @@ import com.dimo.auction.domain.auction.vos.AuctionTiming;
 import com.dimo.auction.domain.auction.vos.Price;
 import com.dimo.auction.domain.shared.Id;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.function.Predicate;
 
 public class AuctionOperations {
@@ -14,11 +14,11 @@ public class AuctionOperations {
         return new Auction(id, itemId, accountId, basePrice, timing);
     }
 
-    public static Predicate<Auction> liveFilter() {
-        return (Auction au) -> au.getTiming().isLive();
+    public static Predicate<Auction> liveFilter(LocalDateTime current) {
+        return (Auction au) -> au.getTiming().isLiveAt(current);
     }
 
-    public static Predicate<Auction> nonStartedFilter() {
-        return (Auction au) -> au.getTiming().hasNotStartedYet();
+    public static Predicate<Auction> nonStartedFilter(LocalDateTime current) {
+        return (Auction au) -> !(au.getTiming().isLiveAt(current) || au.getTiming().isClosedAt(current));
     }
 }

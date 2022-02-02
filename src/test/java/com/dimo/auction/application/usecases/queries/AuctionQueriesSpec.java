@@ -29,7 +29,7 @@ public class AuctionQueriesSpec implements En {
     Id userId;
     public AuctionQueriesSpec() {
         outputPort = Mockito.mock(AuctionOutputPort.class);
-        queries = new AuctionQueriesInputPort(outputPort);
+        queries = new AuctionQueriesInputPort(outputPort, this::getTomorrowNoonTime);
         loadInitData();
 
         When("user request to see all auctions", () -> {
@@ -42,7 +42,7 @@ public class AuctionQueriesSpec implements En {
             auctions = queries.allLiveAuctions();
         });
         Then("he should be given a list of all live auctions", () -> {
-            assertEquals(2, auctions.size());
+            assertEquals(3, auctions.size());
         });
         When("user request to see all not started yet auctions", () -> {
             auctions = queries.allNonStartedAuctions();
@@ -53,11 +53,11 @@ public class AuctionQueriesSpec implements En {
         Given("a user with id {string}", (String userId) -> {
             this.userId = Id.of(UUID.fromString(userId));
             var auction1 = AuctionOperations
-                    .build(Id.generate(), Id.generate(), Price.of(BigInteger.ONE),
-                            AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().plusDays(5), Duration.ofMinutes(30)));
+                    .build(Id.generate(), Id.generate(), new Price(BigInteger.ONE),
+                            new AuctionTiming(getTomorrowNoonTime().plusDays(5), Duration.ofMinutes(30)));
             var auction2 = AuctionOperations
-                    .build(Id.generate(), Id.generate(), Price.of(BigInteger.TWO),
-                            AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(50), Duration.ofMinutes(50)));
+                    .build(Id.generate(), Id.generate(), new Price(BigInteger.TWO),
+                            new AuctionTiming(getTomorrowNoonTime().minusMinutes(50), Duration.ofMinutes(50)));
             when(outputPort.getByAccountId(this.userId)).thenReturn(List.of(auction1, auction2));
         });
         When("user request to see all his auctions", () -> {
@@ -70,20 +70,20 @@ public class AuctionQueriesSpec implements En {
 
     private void loadInitData() {
         var auction1 = AuctionOperations
-                .build(Id.generate(), Id.generate(), Price.of(BigInteger.ONE),
-                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().plusDays(5), Duration.ofMinutes(30)));
+                .build(Id.generate(), Id.generate(), new Price(BigInteger.ONE),
+                        new AuctionTiming(getTomorrowNoonTime().plusDays(5), Duration.ofMinutes(30)));
         var auction2 = AuctionOperations
-                .build(Id.generate(), Id.generate(), Price.of(BigInteger.TWO),
-                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(50), Duration.ofMinutes(50)));
+                .build(Id.generate(), Id.generate(), new Price(BigInteger.TWO),
+                        new AuctionTiming(getTomorrowNoonTime().minusMinutes(50), Duration.ofMinutes(51)));
         var auction3 = AuctionOperations
-                .build(Id.generate(), Id.generate(), Price.of(BigInteger.TEN),
-                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().plusDays(1), Duration.ofMinutes(300)));
+                .build(Id.generate(), Id.generate(), new Price(BigInteger.TEN),
+                        new AuctionTiming(getTomorrowNoonTime().plusDays(1), Duration.ofMinutes(300)));
         var auction4 = AuctionOperations
-                .build(Id.generate(), Id.generate(), Price.of(BigInteger.ONE),
-                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(30)));
+                .build(Id.generate(), Id.generate(), new Price(BigInteger.ONE),
+                        new AuctionTiming(getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(30)));
         var auction5 = AuctionOperations
-                .build(Id.generate(), Id.generate(), Price.of(BigInteger.TWO),
-                        AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusNanos(1), Duration.ofMinutes(30)));
+                .build(Id.generate(), Id.generate(), new Price(BigInteger.TWO),
+                        new AuctionTiming( getTomorrowNoonTime().minusNanos(1), Duration.ofMinutes(30)));
         when(outputPort.getAll()).thenReturn(List.of(auction1, auction2, auction3, auction4, auction5));
     }
 

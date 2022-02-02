@@ -2,7 +2,6 @@ package com.dimo.auction.application.usecases.commands;
 
 import com.dimo.auction.application.ports.input.commands.AuctionCommandsInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
-import com.dimo.auction.application.usecases.commands.ChangeAuctionTimingUC;
 import com.dimo.auction.domain.auction.Auction;
 import com.dimo.auction.domain.auction.exceptions.TimingModificationException;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
@@ -35,38 +34,28 @@ public class ChangeAuctionTimingUcSpec implements En {
 
     public ChangeAuctionTimingUcSpec() {
         outputPort = Mockito.mock(AuctionOutputPort.class);
-        uc = new AuctionCommandsInputPort(outputPort);
+        uc = new AuctionCommandsInputPort(outputPort, this::getTomorrowNoonTime);
 
-        Given("a not yet started auction with id {string}", (String auctionId) -> {
-            id = Id.of(UUID.fromString(auctionId));
-        });
+        Given("a not yet started auction with id {string}", (String auctionId) -> id = Id.of(UUID.fromString(auctionId)));
         Given("start time tomorrow at noon and duration {int} minutes", (Integer duration) -> {
-            previousTiming = AuctionTiming
-                    .of(this::getTomorrowNoonTime, getTomorrowNoonTime().plusDays(1), Duration.ofMinutes(duration));
+            previousTiming = new AuctionTiming(getTomorrowNoonTime().plusDays(1), Duration.ofMinutes(duration));
             when(outputPort.getById(id))
-                    .thenReturn(new Auction(id, Id.generate(), Id.generate(), Price.of(BigInteger.ONE), previousTiming));
+                    .thenReturn(new Auction(id, Id.generate(), Id.generate(), new Price(BigInteger.ONE), previousTiming));
         });
         Given("a finished auction with id {string}", (String auctionId) -> {
             this.id = Id.of(UUID.fromString(auctionId));
-            this.previousTiming = AuctionTiming
-                    .of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusDays(1), Duration.ofMinutes(30));
+            this.previousTiming = new AuctionTiming(getTomorrowNoonTime().minusDays(1), Duration.ofMinutes(30));
             when(outputPort.getById(id))
-                    .thenReturn(new Auction(id, Id.generate(), Id.generate(), Price.of(BigInteger.ONE), this.previousTiming));
+                    .thenReturn(new Auction(id, Id.generate(), Id.generate(), new Price(BigInteger.ONE), this.previousTiming));
         });
-        Given("a live auction with id {string}", (String auctionId) -> {
-            this.id = Id.of(UUID.fromString(auctionId));
-        });
+        Given("a live auction with id {string}", (String auctionId) -> this.id = Id.of(UUID.fromString(auctionId)));
         Given("duration of {int} minutes", (Integer duration) -> {
-            previousTiming = AuctionTiming
-                    .of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(duration));
+            previousTiming = new AuctionTiming(getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(duration));
             when(outputPort.getById(id))
-                    .thenReturn(new Auction(id, Id.generate(), Id.generate(), Price.of(BigInteger.ONE), previousTiming));
+                    .thenReturn(new Auction(id, Id.generate(), Id.generate(), new Price(BigInteger.ONE), previousTiming));
         });
         When("user wants to change start time to day after tomorrow and duration to {int} minutes", (Integer duration) -> {
-             this.newTiming = AuctionTiming
-                    .of(this::getTomorrowNoonTime,
-                            previousTiming.getStartTime(),
-                            Duration.ofMinutes(duration));
+             this.newTiming = new AuctionTiming(previousTiming.getStartTime(), Duration.ofMinutes(duration));
             try {
                 updatedAuction = uc.updateTiming(id, newTiming);
             }catch (Exception e){
@@ -75,10 +64,7 @@ public class ChangeAuctionTimingUcSpec implements En {
 
         });
         When("user wants to change duration to {int} minutes", (Integer duration) -> {
-            this.newTiming = AuctionTiming
-                    .of(this::getTomorrowNoonTime,
-                            previousTiming.getStartTime(),
-                            Duration.ofMinutes(duration));
+            this.newTiming = new AuctionTiming(previousTiming.getStartTime(), Duration.ofMinutes(duration));
             try {
                 updatedAuction = uc.updateTiming(id, newTiming);
             }catch (Exception e){
@@ -87,10 +73,7 @@ public class ChangeAuctionTimingUcSpec implements En {
         });
 
         When("user wants to change start time", () -> {
-            this.newTiming = AuctionTiming
-                    .of(this::getTomorrowNoonTime,
-                            previousTiming.getStartTime().minusMinutes(50),
-                            previousTiming.getDuration());
+            this.newTiming = new AuctionTiming(previousTiming.getStartTime().minusMinutes(50), previousTiming.getDuration());
             try {
                 updatedAuction = uc.updateTiming(id, newTiming);
             }catch (Exception e){

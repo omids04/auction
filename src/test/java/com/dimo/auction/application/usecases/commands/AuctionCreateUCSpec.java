@@ -2,7 +2,6 @@ package com.dimo.auction.application.usecases.commands;
 
 import com.dimo.auction.application.ports.input.commands.AuctionCommandsInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
-import com.dimo.auction.application.usecases.commands.AuctionCreateUC;
 import com.dimo.auction.domain.auction.Auction;
 import com.dimo.auction.domain.auction.exceptions.AuctionTimingException;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
@@ -39,7 +38,7 @@ class AuctionCreateUCSpec implements En {
 
     public AuctionCreateUCSpec() {
         auctionOutputPort = Mockito.mock(AuctionOutputPort.class);
-        uc = new AuctionCommandsInputPort(auctionOutputPort);
+        uc = new AuctionCommandsInputPort(auctionOutputPort, this::getTomorrowNoonTime);
 
         Given("item with id {string}", (String itemId) -> {
             this.itemId = Id.of(UUID.fromString(itemId));
@@ -54,7 +53,7 @@ class AuctionCreateUCSpec implements En {
         });
 
         Given("base price {string}", (String price) -> {
-            this.basePrice = Price.of(new BigInteger(price));
+            this.basePrice = new Price(new BigInteger(price));
         });
 
         Given("start time tomorrow at noon", () -> {
@@ -66,8 +65,7 @@ class AuctionCreateUCSpec implements En {
         });
 
         When("user want to create a new auction", () -> {
-            var timing = AuctionTiming
-                    .of(this::getTomorrowNoonTime, this.startTime, this.duration);
+            var timing = new AuctionTiming(this.startTime, this.duration);
             this.auction = uc.create(itemId, accountId, basePrice, timing);
         });
 
@@ -77,8 +75,7 @@ class AuctionCreateUCSpec implements En {
         });
 
         Then("he's request should be denied with an error message", () -> {
-            var timing = AuctionTiming
-                    .of(this::getTomorrowNoonTime, this.startTime, this.duration);
+            var timing = new AuctionTiming(this.startTime, this.duration);
             assertThrows(AuctionTimingException.class,() -> uc.create(itemId, accountId, basePrice, timing));
             verify(auctionOutputPort, times(0)).save(any());
 

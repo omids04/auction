@@ -1,9 +1,7 @@
 package com.dimo.auction.domain.auction;
 
-import com.dimo.auction.domain.auction.exceptions.AuctionClosedException;
 import com.dimo.auction.domain.auction.exceptions.BidPriceException;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
-import com.dimo.auction.domain.auction.vos.Bid;
 import com.dimo.auction.domain.auction.vos.Price;
 import com.dimo.auction.domain.shared.Id;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,67 +31,27 @@ class AuctionTest {
     @ValueSource(strings = {"1" ,"5"})
     void placingFirstBid(String price) {
         //given
-        var timing = AuctionTiming.of(
-                this::getTomorrowNoonTime,
-                getTomorrowNoonTime().minusMinutes(20),
-                Duration.ofMinutes(40));
-        var auction = new Auction(Id.generate(), Id.generate(), Id.generate(), Price.of(BigInteger.ONE), timing);
-        var bid = new Bid(Id.generate(), Price.of(new BigInteger(price)));
+        var timing = new AuctionTiming(getTomorrowNoonTime().minusMinutes(20), Duration.ofMinutes(40));
+        var auction = new Auction(Id.generate(), Id.generate(), Id.generate(), Price.one(), timing);
 
         //when
-        auction.bid(bid);
+        auction.bid(Id.generate(), new Price(new BigInteger(price)), getTomorrowNoonTime());
 
         //then
-        assertEquals(bid , auction.highestBid().orElse(null));
+        assertEquals(new Price(new BigInteger(price)) , auction.getBids().highestBid().orElse(null).getPrice());
     }
 
     @Test
     void firstBidShouldNotBeLowerThanBasePrice() {
         //given
-        var timing = AuctionTiming.of(
-                this::getTomorrowNoonTime,
-                getTomorrowNoonTime().minusMinutes(20),
-                Duration.ofMinutes(40));
-        var auction = new Auction(Id.generate(), Id.generate(), Id.generate(), Price.of(BigInteger.TEN), timing);
-        var bid = new Bid(Id.generate(), Price.of(BigInteger.ONE));
+        var timing = new AuctionTiming(getTomorrowNoonTime().minusMinutes(20), Duration.ofMinutes(40));
+        var auction = new Auction(Id.generate(), Id.generate(), Id.generate(), new Price(BigInteger.TEN), timing);
 
         //when
         //then
-        assertThrows(BidPriceException.class, () -> auction.bid(bid));
+        assertThrows(BidPriceException.class, () -> auction.bid(Id.generate(), Price.one(), getTomorrowNoonTime()));
     }
 
-
-    @Test
-    void placingANewBid() {
-        //given
-        var timing = AuctionTiming.of(
-                this::getTomorrowNoonTime,
-                getTomorrowNoonTime().minusMinutes(20),
-                Duration.ofMinutes(40));
-        var currentHighest = new Bid(Id.generate(), Price.of(BigInteger.ONE));
-        var auction = new Auction(Id.generate(), Id.generate(), Id.generate(), Price.of(BigInteger.TEN), timing, List.of(currentHighest));
-        var bid = new Bid(Id.generate(), Price.of(BigInteger.TEN));
-
-        //when
-        auction.bid(bid);
-        //then
-        assertEquals(bid, auction.highestBid().orElse(null));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenBidingOnClosedAuction() {
-        //given
-        var timing = AuctionTiming.of(
-                this::getTomorrowNoonTime,
-                getTomorrowNoonTime().minusMinutes(50),
-                Duration.ofMinutes(20));
-        var auction = new Auction(Id.generate(), Id.generate(), Id.generate(), Price.of(BigInteger.ONE), timing);
-        var bid = new Bid(Id.generate(), Price.of(BigInteger.TEN));
-
-        //when
-        //then
-        assertThrows(AuctionClosedException.class, () -> auction.bid(bid));
-    }
 
 
 }

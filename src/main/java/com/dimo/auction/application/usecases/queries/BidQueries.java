@@ -1,6 +1,6 @@
 package com.dimo.auction.application.usecases.queries;
 
-import com.dimo.auction.domain.auction.vos.Bid;
+import com.dimo.auction.domain.auction.Bid;
 import com.dimo.auction.domain.shared.Id;
 
 import java.util.List;

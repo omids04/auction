@@ -2,7 +2,7 @@ package com.dimo.auction.application.ports.input.queries;
 
 import com.dimo.auction.application.ports.output.BidOutputPort;
 import com.dimo.auction.application.usecases.queries.BidQueries;
-import com.dimo.auction.domain.auction.vos.Bid;
+import com.dimo.auction.domain.auction.Bid;
 import com.dimo.auction.domain.shared.Id;
 import lombok.RequiredArgsConstructor;
 

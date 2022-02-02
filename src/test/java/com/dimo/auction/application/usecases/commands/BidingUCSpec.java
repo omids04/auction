@@ -2,7 +2,6 @@ package com.dimo.auction.application.usecases.commands;
 
 import com.dimo.auction.application.ports.input.commands.AuctionCommandsInputPort;
 import com.dimo.auction.application.ports.output.AuctionOutputPort;
-import com.dimo.auction.application.usecases.commands.BidingUC;
 import com.dimo.auction.domain.auction.Auction;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
 import com.dimo.auction.domain.auction.vos.Price;
@@ -31,14 +30,14 @@ public class BidingUCSpec implements En {
 
     public BidingUCSpec() {
         outputPort = Mockito.mock(AuctionOutputPort.class);
-        uc = new AuctionCommandsInputPort(outputPort);
+        uc = new AuctionCommandsInputPort(outputPort, this::getTomorrowNoonTime);
         Given("an open auction with id {string} and {int} as price of highest bid", (String uuid, Integer price) -> {
             auctionId = Id.of(UUID.fromString(uuid));
             Auction auction = new Auction(auctionId,
                     Id.generate(),
                     Id.generate(),
-                    Price.of(new BigInteger(Integer.toString(price))),
-                    AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(20)));
+                    new Price(new BigInteger(Integer.toString(price))),
+                    new AuctionTiming(getTomorrowNoonTime().minusMinutes(10), Duration.ofMinutes(20)));
             when(outputPort.getById(auctionId)).thenReturn(auction);
         });
         Given("a closed auction with id {string}", (String uuid) -> {
@@ -46,8 +45,8 @@ public class BidingUCSpec implements En {
             Auction auction = new Auction(auctionId,
                     Id.generate(),
                     Id.generate(),
-                    Price.of(BigInteger.ONE),
-                    AuctionTiming.of(this::getTomorrowNoonTime, getTomorrowNoonTime().minusMinutes(50), Duration.ofMinutes(20)));
+                    new Price(BigInteger.ONE),
+                    new AuctionTiming(getTomorrowNoonTime().minusMinutes(50), Duration.ofMinutes(20)));
             when(outputPort.getById(auctionId)).thenReturn(auction);
         });
 
@@ -56,7 +55,7 @@ public class BidingUCSpec implements En {
         When("^user wants to bid (\\d+) on that auction$", (Integer price) -> {
             this.accountId = Id.generate();
             try {
-                uc.placeBid(auctionId, accountId, Price.of(new BigInteger(Integer.toString(price))));
+                uc.placeBid(auctionId, accountId, new Price(new BigInteger(Integer.toString(price))));
             }catch (Exception e){
                 this.exception = e;
             }

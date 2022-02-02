@@ -10,13 +10,13 @@ class PriceTest {
 
     @Test
     void wouldNotAllowForNullValueAsPrice(){
-        assertThrows(NullPointerException.class, () -> Price.of(null));
+        assertThrows(NullPointerException.class, () -> new Price(null));
     }
 
 
     @Test
     void wouldNotAllowForNegativeValueAsPrice(){
-        assertThrows(IllegalArgumentException.class, () -> Price.of(new BigInteger("-5")));
+        assertThrows(IllegalArgumentException.class, () -> new Price(new BigInteger("-5")));
     }
 
 

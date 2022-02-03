@@ -10,10 +10,18 @@ import com.dimo.auction.domain.auction.vos.Price;
 import com.dimo.auction.domain.shared.Id;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class AuctionOutputAdaptor implements AuctionOutputPort {
+
+    private LocalDateTime getTomorrowNoonTime(){
+        LocalTime midnight = LocalTime.NOON;
+        LocalDate today = LocalDate.now();
+        return LocalDateTime.of(today, midnight).plusDays(1);
+    }
 
     @Override
     public void save(Auction auction) {
@@ -22,7 +30,7 @@ public class AuctionOutputAdaptor implements AuctionOutputPort {
 
     @Override
     public Auction getById(Id id) {
-        var timing = new AuctionTiming(LocalDateTime.now().minusMinutes(5), Duration.ofMinutes(30));
+        var timing = new AuctionTiming(getTomorrowNoonTime().minusMinutes(5), Duration.ofMinutes(30));
         var bid = new Bid(BidId.ONE, Id.generate(), Price.one());
         var bids = AuctionBids.withBids(List.of(bid), BidId.ONE, Price.one());
         return new Auction(id, Id.generate(), Id.generate(), timing, bids);
@@ -30,15 +38,15 @@ public class AuctionOutputAdaptor implements AuctionOutputPort {
 
     @Override
     public List<Auction> getAll() {
-        var timing = new AuctionTiming(LocalDateTime.now().minusMinutes(5), Duration.ofMinutes(30));
-        var bid = new Bid(BidId.ONE, Id.generate(), Price.one());
+        var timing = new AuctionTiming(getTomorrowNoonTime().minusMinutes(5), Duration.ofMinutes(30));
+        var bid = new Bid(BidId.ONE, Id.generate(), Price.ten());
         var bids = AuctionBids.withBids(List.of(bid), BidId.ONE, Price.one());
         return List.of(new Auction(Id.generate(), Id.generate(), Id.generate(), timing, bids));
     }
 
     @Override
     public List<Auction> getByAccountId(Id userId) {
-        var timing = new AuctionTiming(LocalDateTime.now().minusMinutes(5), Duration.ofMinutes(30));
+        var timing = new AuctionTiming(getTomorrowNoonTime().minusMinutes(5), Duration.ofMinutes(30));
         var bid = new Bid(BidId.ONE, Id.generate(), Price.one());
         var bids = AuctionBids.withBids(List.of(bid), BidId.ONE, Price.one());
         return List.of(new Auction(Id.generate(), Id.generate(), userId, timing, bids));

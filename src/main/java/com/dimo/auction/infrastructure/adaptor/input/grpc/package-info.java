@@ -1,0 +1,1 @@
+package com.dimo.auction.infrastructure.adaptor.input.grpc;

@@ -7,6 +7,7 @@ import com.dimo.auction.application.usecases.commands.AuctionCreateUC;
 import com.dimo.auction.application.usecases.commands.BidingUC;
 import com.dimo.auction.application.usecases.commands.ChangeAuctionTimingUC;
 import com.dimo.auction.domain.auction.Auction;
+import com.dimo.auction.domain.auction.Bid;
 import com.dimo.auction.domain.auction.operations.AuctionOperations;
 import com.dimo.auction.domain.auction.vos.AuctionTiming;
 import com.dimo.auction.domain.auction.vos.Price;
@@ -29,10 +30,11 @@ public class AuctionCommandsInputPort implements AuctionCreateUC, BidingUC, Chan
     }
 
     @Override
-    public void placeBid(Id auctionId, Id accountId, Price price) {
+    public Bid placeBid(Id auctionId, Id accountId, Price price) {
         var auction = auctionOP.getById(auctionId);
         auction.bid(accountId, price, currentTimeOutputPort.currentTime());
         auctionOP.save(auction);
+        return auction.getBids().highestBid().orElse(null);
     }
 
     @Override

@@ -1,2 +1,2 @@
 # auction
-DDD and Ports and Adaptors Example project
+DDD with Ports and Adaptors architecture Example project
